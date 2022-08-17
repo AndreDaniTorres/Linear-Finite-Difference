@@ -2,18 +2,14 @@
 #include <vector>
 
 
-#include "finite-differences.h"
+#include "finite-difference.h"
 
 using namespace std;
 
 int main()
 {
     FiniteDifferences finiteDifferences; 
-    finiteDifferences.setN(9);
-    finiteDifferences.setA(1.0);
-    finiteDifferences.setB(2.0);
-    finiteDifferences.setAlpha(1.0);
-    finiteDifferences.setBeta(2.0);
+
 
     vector< double > k = finiteDifferences.tridiagonaLinearSystem();
 
