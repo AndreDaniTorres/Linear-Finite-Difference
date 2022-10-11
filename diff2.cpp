@@ -100,6 +100,11 @@ void diff::setR(double (*func1)(double), double a, double b, int N) {
 }
 
 
+void diff::print() {
+    cout << sol();
+}
+
+
 // --------------------------------
 // --------- Matriz tridiagonal ----------
 // --------------------------------
@@ -160,6 +165,8 @@ Eigen::Matrix<double, Dynamic, Dynamic> diff::sol() {
     return Sol;
 }
 
+
+
 // --------------------------------
 // --------- Save coordinate and solutions ----------
 // --------------------------------
@@ -170,7 +177,7 @@ void diff::saveSol() {
     ofstream MyFile("filename.txt");
     MatrixXd k = sol();
     for (int i = 0; i < N + 2; i++) {
-        MyFile << (h * i + a) << setw(8) << k(i, 0) << endl;
+        MyFile << (h * i + a) << setw(15) << k(i, 0) << endl;
 
     }
 }

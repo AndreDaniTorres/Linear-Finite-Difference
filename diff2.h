@@ -30,6 +30,11 @@ public:
     void getQ();
     void getR();
 
+    //Imprime
+
+    void print();
+
+
     // Solucion a Ax=b
 
     Eigen::Matrix<double,Eigen::Dynamic, Eigen::Dynamic> trigonal(); //A

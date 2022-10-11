@@ -11,25 +11,26 @@ using namespace Eigen;
 // y'' = P(x) y' + Q(x) y + R(x) 
 // Funciones ingresada por el usuario.
 double p(double x) {
-    return -2 / x;
+    return -1;
 }
 
 double q(double x) {
-    return 2 / pow(x, 2);
+    return -100;
 }
 
 double r(double x) {
-    return sin(log(x)) / pow(x, 2);
+    return 0;
 }
 
-
+        
 int main()
 {
-    diff num(1, 2, 9, 1, 2, &p, &q, &r);
+    diff num(0, 15, 100, 0, 3, &p, &q, &r);
 
-    Matrix<double, 11, 1> a = num.sol();
+    Matrix<double, Dynamic, Dynamic> a = num.sol();
     num.saveSol();
-    cout << a;
+   // num.print();
+    //cout << a;
 
     return 0;
 }
