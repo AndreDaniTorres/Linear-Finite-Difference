@@ -1,13 +1,15 @@
-#include "diff.h"
 #include <Eigen/Dense>
 #include <cmath>
 #include <fstream>
 #include <iomanip> 
-#include "diff.h"
+#include "diff2.h"
+#include <iostream>
 using namespace std;
 using namespace Eigen;
 
 
+// y'' = P(x) y' + Q(x) y + R(x) 
+// Funciones ingresada por el usuario.
 double p(double x) {
     return -2 / x;
 }
@@ -23,15 +25,11 @@ double r(double x) {
 
 int main()
 {
-
-    diff num(1, 2, 1, 2, &p, &q, &r);
+    diff num(1, 2, 9, 1, 2, &p, &q, &r);
 
     Matrix<double, 11, 1> a = num.sol();
     num.saveSol();
     cout << a;
 
     return 0;
-
-
-
 }

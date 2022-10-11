@@ -1,47 +1,58 @@
 #ifndef DIFF_H
 #define DIFF_H
 
-#include <iostream>
 #include <Eigen/Dense>
 
 
+//class
 
 class diff {
 
 public:
 
-    static const int N = 9;
+    
+    //Constructor
+    diff(double , double , int, double , double , double (*)(double), double (*)(double), double (*)(double)); //(*func2)(double) //a,b,N,fa,fb,P,Q,R
 
-    diff(double a, double b, double fa, double fb, double (*func1)(double), double (*func2)(double), double (*func3)(double));
+    // Se fijan los puntos finales y las condiciones de frontera.
+    void setA(double );
+    void setB(double );
+    void setFa(double );
+    void setFb(double );
 
-    void setA(double a);
-    void setB(double b);
-    void setFa(double fa);
-    void setFb(double fb);
+    void setP(double (*)(double),double , double,int);
+    void setQ(double (*)(double), double, double,int);
+    void setR(double (*)(double), double, double,int);
 
-    void getP();
+
+    //Muestra las funciones 
+    void getP();  
     void getQ();
     void getR();
 
-    Eigen::Matrix<double, N, N> trigonal();
+    // Solucion a Ax=b
 
-    Eigen::Matrix<double, 1, N> b_eq();
-
-    Eigen::Matrix<double, N + 2, 1> sol();
+    Eigen::Matrix<double,Eigen::Dynamic, Eigen::Dynamic> trigonal(); //A
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> b_eq(); //b
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> sol(); //x
 
     void saveSol();
 
 
 
 private:
+    //funciones
     Eigen::MatrixXd p;
     Eigen::MatrixXd q;
     Eigen::MatrixXd r;
+
+    //Puntos finales, condiciones iniciales y paso.
     double a;
     double b;
     double fa;
     double fb;
     double h;
+    int N;
 
 };
 
