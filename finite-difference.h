@@ -10,11 +10,11 @@ class FiniteDifferences
     FiniteDifferences(); 
 
     // Set Boundary conditions and endpoints
-    void setN(int);
-    void setA(float);
-    void setB(float);
-    void setAlpha(float);
-    void setBeta(float);
+    void setN();
+    void setA();
+    void setB();
+    void setAlpha();
+    void setBeta();
 
     // Functions boundary-value problem
     float p(float x);
@@ -23,12 +23,18 @@ class FiniteDifferences
 
     // Linear Finite-Difference solution
     std::vector<double> tridiagonaLinearSystem();
+    std::vector<double> getX();
+    void saveSolutions( std::vector<double>, std::vector<double>);
     
-
     
     private:
+
     // Centered-difference formula
-    void centeredDifference(std::vector<double> &, std::vector<double> &, std::vector<double> &, std::vector<double> &);
+    void centeredDifference(std::vector<double> &, std::vector<double> &, 
+                            std::vector<double> &, std::vector<double> &, 
+                            std::vector<double> &);
+
+    double verificarDatos();
     
     // Boundary conditions and endpoints
     int N;
@@ -36,5 +42,6 @@ class FiniteDifferences
     float b;
     float alpha;
     float beta;
+    std::vector<double> vectX;
   
 };

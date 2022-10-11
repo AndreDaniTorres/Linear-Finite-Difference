@@ -10,16 +10,15 @@ int main()
 {
     FiniteDifferences finiteDifferences; 
 
-
+    // Solve system
     vector< double > k = finiteDifferences.tridiagonaLinearSystem();
 
-    
+    // Get X 
+    vector< double > x = finiteDifferences.getX();
 
-    for (size_t i = 0; i < k.size(); i++)
-    {
-        cout << k.at(i) <<endl;
-    }
-    
+    // Print and Save solution file
+    finiteDifferences.saveSolutions(k, x);
+
     return 0; 
 }
 
