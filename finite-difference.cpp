@@ -1,4 +1,4 @@
-// linear boundary-value problem
+// Linear boundary-value problem
 
 // Sea una ecuación del tipo: y'' = P(x) y' + Q(x) y + R(x)
 
@@ -6,6 +6,7 @@
 #include <cmath>
 #include <vector>
 #include <tuple>
+#include <fstream>
 
 #include "finite-difference.h"
 
@@ -15,24 +16,18 @@
 FiniteDifferences::FiniteDifferences()
 {
 
-    //this->setN(9);
     this->setN();
     this->setA();
     this->setB();
     this->setAlpha();
     this->setBeta();
-
-    // this->setA(1.0);
-    // this->setB(2.0);
-    // this->setAlpha(1.0);
-    // this->setBeta(2.0);
 }
 
 // --------------------------------
 // ------------ SET ---------------
 // --------------------------------
 
-void FiniteDifferences::setN(/*int const& value*/)
+void FiniteDifferences::setN()
 {
     std::cout << "Ingresa N:" << std::endl;
     this->N = this->verificarDatos();
@@ -62,6 +57,14 @@ void FiniteDifferences::setBeta()
     this->beta = this->verificarDatos();
 }
 
+
+std::vector<double> FiniteDifferences::getX()
+{
+    return vectX;
+}
+
+
+
 // --------------------------------
 // --------- FUNCTIONS ------------
 // --------------------------------
@@ -86,41 +89,54 @@ float FiniteDifferences::r(float x)
 // --------------------------------
 
 void FiniteDifferences::centeredDifference(std::vector<double> &vectA, std::vector<double> &vectB,
-                                           std::vector<double> &vectC, std::vector<double> &vectD)
+                                           std::vector<double> &vectC, std::vector<double> &vectD, 
+                                           std::vector<double> &vectX)
 {
 
+    
     // step size
     float h = (b - a) / (N + 1);
 
     // mesh points
     float x = a + h;
+    vectX.push_back(a);
+    vectX.push_back(x);
 
-    std::cout << "x=" << x << ", h=" << h << std::endl;
+    std::cout << " ------ Definir  X ------ " << std::endl;
+    std::cout << "x1=" << x << ", h=" << h << std::endl;
 
     // First Element
     vectA.push_back(2 + pow(h, 2) * this->q(x));
     vectB.push_back(-1 + (h / 2) * this->p(x));
     vectC.push_back(0);
-    vectD.push_back(-1 * pow(h, 2) * r(x) + (1 + (h / 2) * p(x)) * alpha);
+    vectD.push_back(-1 * pow(h, 2) * this->r(x) + (1 + (h / 2) * this->p(x)) * alpha);
+    
 
     // From 2 to N-1
     for (size_t i = 2; i <= N - 1; i++)
     {
         x = a + i * h;
+        vectX.push_back(x);
+        std::cout << "x" << i << "=" << x << std::endl;
 
-        vectA.push_back(2 + pow(h, 2) * q(x));
-        vectB.push_back(-1 + (h / 2) * p(x));
-        vectC.push_back(-1 - (h / 2) * p(x));
-        vectD.push_back(-1 * pow(h, 2) * r(x));
+        vectA.push_back(2 + pow(h, 2) * this->q(x));
+        vectB.push_back(-1 + (h / 2) * this->p(x));
+        vectC.push_back(-1 - (h / 2) * this->p(x));
+        vectD.push_back(-1 * pow(h, 2) * this->r(x));
     }
 
     // Last element
     x = b - h;
+    vectX.push_back(x);
+    vectX.push_back(b);
+    std::cout << "x" << N << "=" << x <<  std::endl;
 
-    vectA.push_back(2 + pow(h, 2) * q(x));
+    vectA.push_back(2 + pow(h, 2) * this->q(x));
     vectB.push_back(0);
-    vectC.push_back(-1 - (h / 2) * p(x));
-    vectD.push_back(-1 * pow(h, 2) * r(x) + (1 - (h / 2) * p(x)) * beta);
+    vectC.push_back(-1 - (h / 2) * this->p(x));
+    vectD.push_back(-1 * pow(h, 2) * this->r(x) + (1 - (h / 2) * this->p(x)) * beta);
+
+    this->vectX = vectX;
 }
 
 
@@ -135,8 +151,9 @@ std::vector<double> FiniteDifferences::tridiagonaLinearSystem()
     std::vector<double> vectB;
     std::vector<double> vectC;
     std::vector<double> vectD;
+    std::vector<double> vectX;
 
-    centeredDifference(vectA, vectB, vectC, vectD);
+    centeredDifference(vectA, vectB, vectC, vectD, vectX);
 
     std::vector<double> vectL;
     std::vector<double> vectU;
@@ -161,7 +178,7 @@ std::vector<double> FiniteDifferences::tridiagonaLinearSystem()
     vectU.push_back(0);
     vectZ.push_back((vectD.at(N - 1) - vectC.at(N - 1) * vectZ.at(N - 2)) / vectL.at(N - 1));
 
-    std::cout << "Definir  W" << std::endl;
+    std::cout << " ------ Definir  W ------ " << std::endl;
 
     std::vector<double> vectW(N + 2); // se agregan 2: W(O), W(N+1)
 
@@ -185,7 +202,9 @@ std::vector<double> FiniteDifferences::tridiagonaLinearSystem()
 }
 
 
-
+// --------------------------------
+// -------- VERIFY DATA -----------
+// --------------------------------
 double FiniteDifferences::verificarDatos(){
 
     double num = 0;
@@ -203,4 +222,18 @@ double FiniteDifferences::verificarDatos(){
     }
 
     return num;
+}
+
+
+
+void FiniteDifferences::saveSolutions( std::vector<double> k, std::vector<double> x ) {
+
+    std::ofstream MyFile("solucion.txt");
+
+    for (size_t i = 0; i < k.size(); i++)
+    {
+        std::cout << "w" << i << "=" << k.at(i) << std::endl;
+        MyFile << x.at(i) << "          " << k.at(i) << std::endl;
+    }
+
 }
