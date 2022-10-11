@@ -225,7 +225,9 @@ double FiniteDifferences::verificarDatos(){
 }
 
 
-
+// --------------------------------
+// -------- SAVE - PRINT -----------
+// --------------------------------
 void FiniteDifferences::saveSolutions( std::vector<double> k, std::vector<double> x ) {
 
     std::ofstream MyFile("solucion.txt");
